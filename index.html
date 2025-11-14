@@ -1,0 +1,957 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nubes Emocionales</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #000000;
+            font-family: 'Arial', sans-serif;
+            color: #ffffff;
+            overflow-x: auto;
+            min-height: 100vh;
+            padding-top: 80px;
+            padding-bottom: 100px; /* ESPACIO PARA LOS BOTONES ABAJO */
+        }
+
+        /* PLUMAS CAYENDO */
+        .feathers-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .feather {
+            position: absolute;
+            top: -50px;
+            font-size: 24px;
+            color: rgba(255, 255, 255, 0.7);
+            animation: fall linear infinite;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        }
+
+        @keyframes fall {
+            to {
+                transform: translateY(100vh) rotate(360deg);
+            }
+        }
+
+        /* CONTENEDOR PRINCIPAL */
+        .main-container {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            min-height: calc(100vh - 180px); /* MÁS ESPACIO */
+            padding: 20px;
+            gap: 30px;
+            min-width: 1600px;
+        }
+
+        /* PANEL DE EMOCIONES */
+        .emotions-panel {
+            width: 350px;
+            background: rgba(0, 0, 0, 0.85);
+            border-radius: 15px;
+            padding: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 0 40px rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            max-height: calc(100vh - 200px);
+            overflow-y: auto;
+            flex-shrink: 0;
+            margin-top: 20px;
+        }
+
+        .emotion-group {
+            margin-bottom: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .group-header {
+            padding: 15px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: all 0.3s ease;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .group-header:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .group-color {
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            flex-shrink: 0;
+        }
+
+        .group-name {
+            font-weight: bold;
+            font-size: 16px;
+            color: #ffffff;
+        }
+
+        .group-arrow {
+            margin-left: auto;
+            transition: transform 0.3s ease;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .group-content {
+            padding: 0;
+            max-height: 0;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .group-content.open {
+            padding: 15px;
+            max-height: 500px;
+        }
+
+        .emotion-item {
+            padding: 8px 12px;
+            margin: 5px 0;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 8px;
+            font-size: 14px;
+            border-left: 4px solid transparent;
+            transition: all 0.2s ease;
+        }
+
+        .emotion-item:hover {
+            background: rgba(255, 255, 255, 0.12);
+            transform: translateX(5px);
+        }
+
+        /* CONTENEDOR DE MESES - MÁS CENTRADO Y CON ESPACIO */
+        .months-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 5px; /* MÁS ESPACIO ENTRE MESES */
+            padding: 20px;
+            overflow-x: auto;
+            overflow-y: visible;
+            margin-top: 20px;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* GRUPO DE MES */
+        .month-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0px;
+            min-width: 1400px;
+            margin-top: -12px; /* MENOS SUPERPOSICIÓN */
+            position: relative;
+            z-index: 1;
+        }
+
+        /* PRIMER GRUPO SIN SUPERPOSICIÓN */
+        .month-group:first-child {
+            margin-top: 0;
+            z-index: 28;
+        }
+
+        /* Z-INDEX PROGRESIVO PARA EFECTO 3D */
+        .month-group:nth-child(1) { z-index: 28; }
+        .month-group:nth-child(2) { z-index: 26; }
+        .month-group:nth-child(3) { z-index: 24; }
+        .month-group:nth-child(4) { z-index: 22; }
+        .month-group:nth-child(5) { z-index: 20; }
+        .month-group:nth-child(6) { z-index: 18; }
+        .month-group:nth-child(7) { z-index: 16; }
+        .month-group:nth-child(8) { z-index: 14; }
+        .month-group:nth-child(9) { z-index: 12; }
+        .month-group:nth-child(10) { z-index: 10; }
+        .month-group:nth-child(11) { z-index: 8; }
+        .month-group:nth-child(12) { z-index: 6; }
+        .month-group:nth-child(13) { z-index: 4; }
+
+        /* FILAS DE DÍAS DEL MES */
+        .month-row {
+            display: flex;
+            gap: 3px; /* MÁS ESPACIO ENTRE NUBES */
+            flex-wrap: nowrap;
+            justify-content: center; /* CENTRADO */
+            min-height: 45px;
+            padding: 0 20px; /* MÁRGENES A LOS LADOS */
+        }
+
+        /* SEGUNDA FILA SUPERPUESTA */
+        .month-row:nth-child(2) {
+            margin-top: -12px; /* MENOS SUPERPOSICIÓN */
+        }
+
+        /* NUBES MÁS SEPARADAS */
+        .cloud {
+            width: 50px;
+            height: 36px;
+            border-radius: 18px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(5px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: bold;
+            color: rgba(0, 0, 0, 0.8);
+            text-shadow: 0.5px 0.5px 1px rgba(255, 255, 255, 0.5);
+            box-shadow: 
+                0 0 15px rgba(255, 255, 255, 0.1),
+                inset 0 0 15px rgba(255, 255, 255, 0.05);
+            position: relative;
+            margin-left: -8px; /* MENOS SUPERPOSICIÓN HORIZONTAL */
+            flex-shrink: 0;
+        }
+
+        .cloud:first-child {
+            margin-left: 0;
+        }
+
+        /* EFECTO DE NUBE */
+        .cloud::before {
+            content: '';
+            position: absolute;
+            top: -3px;
+            left: 8px;
+            width: 14px;
+            height: 14px;
+            background: inherit;
+            border-radius: 50%;
+            border: inherit;
+        }
+
+        .cloud::after {
+            content: '';
+            position: absolute;
+            top: -5px;
+            right: 10px;
+            width: 12px;
+            height: 12px;
+            background: inherit;
+            border-radius: 50%;
+            border: inherit;
+        }
+
+        .cloud.sin-emocion { 
+            background: rgba(255, 255, 255, 0.15);
+            border-color: rgba(255, 255, 255, 0.3);
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .cloud:hover {
+            transform: scale(1.25);
+            z-index: 100;
+            box-shadow: 
+                0 0 20px currentColor,
+                0 8px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        /* COLORES BASE DE EMOCIONES */
+        .alegria { background: #FFE7C2; color: #8B4513; }
+        .tristeza { background: #BFD7ED; color: #2C3E50; }
+        .miedo { background: #C7D3CC; color: #34495E; }
+        .enojo { background: #F5B5A6; color: #C0392B; }
+        .calma { background: #DFF6E5; color: #27AE60; }
+        .creatividad { background: #F3D9FF; color: #8E44AD; }
+
+        /* CONTROLES - MÁS SEPARADOS DE LAS NUBES */
+        .controls {
+            position: fixed;
+            bottom: 30px; /* MÁS SEPARADO DEL BORDE */
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 15px;
+            z-index: 100;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 15px 25px;
+            border-radius: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+        }
+
+        button {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 12px 25px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            font-size: 14px;
+        }
+
+        button:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.05);
+        }
+
+        /* MODAL PARA GRADIENTES PERSONALIZADOS */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: rgba(0, 0, 0, 0.95);
+            padding: 30px;
+            border-radius: 15px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            text-align: center;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .emotion-selector {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        .emotion-option {
+            padding: 15px;
+            border-radius: 10px;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .emotion-option.selected {
+            border-color: white;
+            transform: scale(1.05);
+            box-shadow: 0 0 15px currentColor;
+        }
+
+        .gradient-preview {
+            width: 100%;
+            height: 60px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.5s ease;
+        }
+
+        .selected-emotions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 15px 0;
+            justify-content: center;
+        }
+
+        .selected-emotion-tag {
+            padding: 6px 12px;
+            border-radius: 15px;
+            font-size: 11px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .remove-emotion {
+            cursor: pointer;
+            font-weight: bold;
+            margin-left: 5px;
+        }
+
+        /* TÍTULO MEJORADO */
+        .title {
+            position: fixed;
+            top: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 1.8em;
+            color: #ffffff;
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+            z-index: 100;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 10px 30px;
+            border-radius: 50px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            white-space: nowrap;
+        }
+
+        /* ESTRELLAS TITILANTES */
+        .stars-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 3s infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.2; }
+            50% { opacity: 1; }
+        }
+
+        /* SCROLLBAR PERSONALIZADO */
+        .months-container::-webkit-scrollbar {
+            height: 8px;
+        }
+
+        .months-container::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+
+        .months-container::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+        }
+
+        .months-container::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.5);
+        }
+    </style>
+</head>
+<body>
+    <!-- PLUMAS CAYENDO -->
+    <div class="feathers-container" id="feathers-container"></div>
+    
+    <!-- ESTRELLAS TITILANTES -->
+    <div class="stars-container" id="stars-container"></div>
+
+    <!-- MODAL PARA GRADIENTES PERSONALIZADOS -->
+    <div class="modal" id="gradientModal">
+        <div class="modal-content">
+            <h3>🎨 Crea tu Gradiente Emocional</h3>
+            <p>Selecciona las emociones que sentiste hoy (puedes elegir varias):</p>
+            
+            <div class="emotion-selector">
+                <div class="emotion-option alegria" onclick="toggleEmotion('alegria')">
+                    ALEGRÍA
+                </div>
+                <div class="emotion-option tristeza" onclick="toggleEmotion('tristeza')">
+                    TRISTEZA
+                </div>
+                <div class="emotion-option miedo" onclick="toggleEmotion('miedo')">
+                    MIEDO
+                </div>
+                <div class="emotion-option enojo" onclick="toggleEmotion('enojo')">
+                    ENOJO
+                </div>
+                <div class="emotion-option calma" onclick="toggleEmotion('calma')">
+                    CALMA
+                </div>
+                <div class="emotion-option creatividad" onclick="toggleEmotion('creatividad')">
+                    CREATIVIDAD
+                </div>
+            </div>
+
+            <div class="selected-emotions" id="selectedEmotions">
+                <!-- Emociones seleccionadas aparecen aquí -->
+            </div>
+
+            <div class="gradient-preview" id="gradientPreview">
+                <!-- Vista previa del gradiente -->
+            </div>
+
+            <div style="display: flex; gap: 10px; justify-content: center;">
+                <button onclick="applyGradient()">✅ Aplicar a Nube</button>
+                <button onclick="closeGradientModal()">❌ Cancelar</button>
+                <button onclick="clearSelection()">🗑️ Limpiar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- TÍTULO MEJORADO -->
+    <h1 class="title">🌈 Mis Nubes Emocionales 2024-2026</h1>
+
+    <div class="main-container">
+        <!-- PANEL DE EMOCIONES -->
+        <div class="emotions-panel">
+            <h3 style="text-align: center; margin-bottom: 20px; color: #ffffff;">🎭 Mis Emociones</h3>
+            
+            <!-- ALEGRÍA -->
+            <div class="emotion-group">
+                <div class="group-header" onclick="toggleGroup('alegria')">
+                    <div class="group-color" style="background: #FFE7C2"></div>
+                    <div class="group-name">ALEGRÍA</div>
+                    <div class="group-arrow">▼</div>
+                </div>
+                <div class="group-content" id="alegria-content">
+                    <div class="emotion-item">Feliz: sensación general de bienestar</div>
+                    <div class="emotion-item">Animada: con energía y ganas</div>
+                    <div class="emotion-item">Agradecida: valorando lo positivo</div>
+                    <div class="emotion-item">Entusiasmada: motivación intensa</div>
+                    <div class="emotion-item">Orgullosa: satisfacción por logros</div>
+                    <div class="emotion-item">Aliviada: disminución de tensión</div>
+                </div>
+            </div>
+
+            <!-- TRISTEZA -->
+            <div class="emotion-group">
+                <div class="group-header" onclick="toggleGroup('tristeza')">
+                    <div class="group-color" style="background: #BFD7ED"></div>
+                    <div class="group-name">TRISTEZA</div>
+                    <div class="group-arrow">▼</div>
+                </div>
+                <div class="group-content" id="tristeza-content">
+                    <div class="emotion-item">Triste: sensación de pena emocional</div>
+                    <div class="emotion-item">Desanimada: falta de motivación</div>
+                    <div class="emotion-item">Nostálgica: tristeza por el pasado</div>
+                    <div class="emotion-item">Melancólica: tristeza profunda</div>
+                    <div class="emotion-item">Agotada: emociones consumieron energía</div>
+                    <div class="emotion-item">Sola: sensación de desconexión</div>
+                </div>
+            </div>
+
+            <!-- MIEDO -->
+            <div class="emotion-group">
+                <div class="group-header" onclick="toggleGroup('miedo')">
+                    <div class="group-color" style="background: #C7D3CC"></div>
+                    <div class="group-name">MIEDO</div>
+                    <div class="group-arrow">▼</div>
+                </div>
+                <div class="group-content" id="miedo-content">
+                    <div class="emotion-item">Ansiosa: inquietud por lo incierto</div>
+                    <div class="emotion-item">Nerviosa: estado de tensión leve</div>
+                    <div class="emotion-item">Preocupada: enfocada en problemas</div>
+                    <div class="emotion-item">Insegura: duda sobre uno mismo</div>
+                    <div class="emotion-item">Sobrecargada: muchas demandas</div>
+                    <div class="emotion-item">Tensa: cuerpo rígido por estrés</div>
+                </div>
+            </div>
+
+            <!-- ENOJO -->
+            <div class="emotion-group">
+                <div class="group-header" onclick="toggleGroup('enojo')">
+                    <div class="group-color" style="background: #F5B5A6"></div>
+                    <div class="group-name">ENOJO</div>
+                    <div class="group-arrow">▼</div>
+                </div>
+                <div class="group-content" id="enojo-content">
+                    <div class="emotion-item">Molesta: irritación leve</div>
+                    <div class="emotion-item">Frustrada: bloqueo ante metas</div>
+                    <div class="emotion-item">Irritada: sensibilidad aumentada</div>
+                    <div class="emotion-item">Enojada: rechazo ante injusticia</div>
+                    <div class="emotion-item">Impaciente: dificultad para esperar</div>
+                    <div class="emotion-item">Ofuscada: confusión y enojo</div>
+                </div>
+            </div>
+
+            <!-- CALMA -->
+            <div class="emotion-group">
+                <div class="group-header" onclick="toggleGroup('calma')">
+                    <div class="group-color" style="background: #DFF6E5"></div>
+                    <div class="group-name">CALMA</div>
+                    <div class="group-arrow">▼</div>
+                </div>
+                <div class="group-content" id="calma-content">
+                    <div class="emotion-item">Tranquila: ausencia de tensión</div>
+                    <div class="emotion-item">En paz: armonía interna</div>
+                    <div class="emotion-item">Centrada: control de emociones</div>
+                    <div class="emotion-item">Relajada: sin preocupación</div>
+                    <div class="emotion-item">Estable: emociones niveladas</div>
+                    <div class="emotion-item">Con claridad: mente despejada</div>
+                </div>
+            </div>
+
+            <!-- CREATIVIDAD -->
+            <div class="emotion-group">
+                <div class="group-header" onclick="toggleGroup('creatividad')">
+                    <div class="group-color" style="background: #F3D9FF"></div>
+                    <div class="group-name">CREATIVIDAD</div>
+                    <div class="group-arrow">▼</div>
+                </div>
+                <div class="group-content" id="creatividad-content">
+                    <div class="emotion-item">Inspirada: ideas creativas</div>
+                    <div class="emotion-item">Curiosa: deseo de explorar</div>
+                    <div class="emotion-item">Creativa: ideas originales</div>
+                    <div class="emotion-item">Imaginativa: visualizar posibilidades</div>
+                    <div class="emotion-item">Motivada: impulso interno</div>
+                    <div class="emotion-item">Exploradora: descubrir y experimentar</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MESES SUPERPUESTOS - MÁS CENTRADOS Y CON ESPACIO -->
+        <div class="months-container" id="months-container">
+            <!-- Los meses se generan automáticamente -->
+        </div>
+    </div>
+
+    <!-- CONTROLES - MÁS SEPARADOS DE LAS NUBES -->
+    <div class="controls">
+        <button onclick="openGradientModal()">🎨 Crear Gradiente</button>
+        <button onclick="resetClouds()">🔄 Reiniciar Todo</button>
+        <button onclick="saveClouds()">💾 Guardar</button>
+        <button onclick="exportData()">📤 Exportar</button>
+    </div>
+
+    <script>
+        // CONFIGURACIÓN DESDE HOY HASTA DICIEMBRE 2026
+        function getMonthConfig() {
+            const today = new Date();
+            const currentYear = today.getFullYear();
+            const currentMonth = today.getMonth();
+            const currentDate = today.getDate();
+            
+            const monthConfig = [];
+            let startDay = 1;
+            
+            // Empezar desde el mes actual hasta diciembre 2026
+            for (let year = currentYear; year <= 2026; year++) {
+                const startMonth = (year === currentYear) ? currentMonth : 0;
+                const endMonth = (year === 2026) ? 11 : 11;
+                
+                for (let month = startMonth; month <= endMonth; month++) {
+                    const daysInMonth = new Date(year, month + 1, 0).getDate();
+                    let startDate = 1;
+                    
+                    if (year === currentYear && month === currentMonth) {
+                        startDate = currentDate;
+                    }
+                    
+                    monthConfig.push({
+                        year: year,
+                        month: month,
+                        days: daysInMonth,
+                        startDate: startDate,
+                        startDay: startDay
+                    });
+                    
+                    startDay += (daysInMonth - startDate + 1);
+                }
+            }
+            
+            return monthConfig;
+        }
+
+        let currentCloudDay = null;
+        let selectedEmotions = [];
+
+        // COLORES BASE PARA GRADIENTES
+        const emotionColors = {
+            alegria: '#FFE7C2',
+            tristeza: '#BFD7ED', 
+            miedo: '#C7D3CC',
+            enojo: '#F5B5A6',
+            calma: '#DFF6E5',
+            creatividad: '#F3D9FF'
+        };
+
+        const emotionNames = {
+            alegria: 'ALEGRÍA',
+            tristeza: 'TRISTEZA',
+            miedo: 'MIEDO',
+            enojo: 'ENOJO', 
+            calma: 'CALMA',
+            creatividad: 'CREATIVIDAD'
+        };
+
+        // CREAR PLUMAS CAYENDO
+        function createFeathers() {
+            const container = document.getElementById('feathers-container');
+            const featherCount = 15;
+            
+            for (let i = 0; i < featherCount; i++) {
+                const feather = document.createElement('div');
+                feather.className = 'feather';
+                feather.innerHTML = '𓆰';
+                feather.style.left = Math.random() * 100 + 'vw';
+                feather.style.animationDuration = (Math.random() * 10 + 10) + 's';
+                feather.style.animationDelay = Math.random() * 5 + 's';
+                feather.style.opacity = Math.random() * 0.5 + 0.3;
+                container.appendChild(feather);
+            }
+        }
+
+        // CREAR ESTRELLAS TITILANTES
+        function createStars() {
+            const container = document.getElementById('stars-container');
+            const starCount = 50;
+            
+            for (let i = 0; i < starCount; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.width = Math.random() * 3 + 1 + 'px';
+                star.style.height = star.style.width;
+                star.style.left = Math.random() * 100 + 'vw';
+                star.style.top = Math.random() * 100 + 'vh';
+                star.style.animationDelay = Math.random() * 3 + 's';
+                star.style.animationDuration = (Math.random() * 2 + 2) + 's';
+                container.appendChild(star);
+            }
+        }
+
+        // CREAR MESES SUPERPUESTOS 50%
+        function createMonths() {
+            const container = document.getElementById('months-container');
+            container.innerHTML = '';
+            
+            const monthConfig = getMonthConfig();
+            
+            monthConfig.forEach((monthData, index) => {
+                const monthGroup = document.createElement('div');
+                monthGroup.className = 'month-group';
+                monthGroup.style.zIndex = (28 - (index * 2));
+                
+                // Dividir los días en 2 filas
+                const totalDays = monthData.days - monthData.startDate + 1;
+                const daysPerRow = Math.ceil(totalDays / 2);
+                
+                // Primera fila del mes
+                const row1 = document.createElement('div');
+                row1.className = 'month-row';
+                
+                // Segunda fila del mes
+                const row2 = document.createElement('div');
+                row2.className = 'month-row';
+                
+                let dayCounter = 0;
+                for (let day = monthData.startDate; day <= monthData.days; day++) {
+                    const globalDay = monthData.startDay + dayCounter;
+                    const cloud = document.createElement('div');
+                    cloud.className = 'cloud sin-emocion';
+                    cloud.dataset.day = globalDay;
+                    cloud.textContent = day;
+                    
+                    // Recuperar estado guardado
+                    const savedState = localStorage.getItem(`emotion-${globalDay}`);
+                    if (savedState) {
+                        if (savedState.includes('gradient')) {
+                            const gradientData = JSON.parse(savedState);
+                            cloud.style.background = gradientData.gradient;
+                        } else {
+                            cloud.className = `cloud ${savedState}`;
+                        }
+                    }
+                    
+                    // Evento click
+                    cloud.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        currentCloudDay = globalDay;
+                        openGradientModal();
+                    });
+                    
+                    // Asignar a la fila correspondiente
+                    if (dayCounter < daysPerRow) {
+                        row1.appendChild(cloud);
+                    } else {
+                        row2.appendChild(cloud);
+                    }
+                    
+                    dayCounter++;
+                }
+                
+                monthGroup.appendChild(row1);
+                if (totalDays > daysPerRow) {
+                    monthGroup.appendChild(row2);
+                }
+                container.appendChild(monthGroup);
+            });
+        }
+
+        // MODAL PARA GRADIENTES PERSONALIZADOS
+        function openGradientModal() {
+            if (!currentCloudDay) return;
+            
+            selectedEmotions = [];
+            updateGradientPreview();
+            document.getElementById('gradientModal').style.display = 'flex';
+        }
+
+        function closeGradientModal() {
+            document.getElementById('gradientModal').style.display = 'none';
+            selectedEmotions = [];
+            currentCloudDay = null;
+        }
+
+        function toggleEmotion(emotion) {
+            const emotionElement = document.querySelector(`.emotion-option.${emotion}`);
+            
+            if (selectedEmotions.includes(emotion)) {
+                selectedEmotions = selectedEmotions.filter(e => e !== emotion);
+                emotionElement.classList.remove('selected');
+            } else {
+                selectedEmotions.push(emotion);
+                emotionElement.classList.add('selected');
+            }
+            
+            updateGradientPreview();
+        }
+
+        function updateGradientPreview() {
+            const preview = document.getElementById('gradientPreview');
+            const selectedContainer = document.getElementById('selectedEmotions');
+            
+            if (selectedEmotions.length === 0) {
+                preview.style.background = 'rgba(255, 255, 255, 0.1)';
+            } else if (selectedEmotions.length === 1) {
+                preview.style.background = emotionColors[selectedEmotions[0]];
+            } else {
+                const gradientStops = selectedEmotions.map((emotion, index) => {
+                    const percentage = (index / (selectedEmotions.length - 1)) * 100;
+                    return `${emotionColors[emotion]} ${percentage}%`;
+                });
+                preview.style.background = `linear-gradient(90deg, ${gradientStops.join(', ')})`;
+            }
+            
+            selectedContainer.innerHTML = '';
+            selectedEmotions.forEach(emotion => {
+                const tag = document.createElement('div');
+                tag.className = `selected-emotion-tag ${emotion}`;
+                tag.innerHTML = `
+                    ${emotionNames[emotion]}
+                    <span class="remove-emotion" onclick="removeEmotion('${emotion}')">×</span>
+                `;
+                selectedContainer.appendChild(tag);
+            });
+        }
+
+        function removeEmotion(emotion) {
+            selectedEmotions = selectedEmotions.filter(e => e !== emotion);
+            document.querySelector(`.emotion-option.${emotion}`).classList.remove('selected');
+            updateGradientPreview();
+        }
+
+        function clearSelection() {
+            selectedEmotions = [];
+            document.querySelectorAll('.emotion-option').forEach(option => {
+                option.classList.remove('selected');
+            });
+            updateGradientPreview();
+        }
+
+        function applyGradient() {
+            if (selectedEmotions.length === 0) {
+                alert('⚠️ Selecciona al menos una emoción');
+                return;
+            }
+
+            const cloud = document.querySelector(`.cloud[data-day="${currentCloudDay}"]`);
+            
+            if (selectedEmotions.length === 1) {
+                cloud.className = `cloud ${selectedEmotions[0]}`;
+                localStorage.setItem(`emotion-${currentCloudDay}`, selectedEmotions[0]);
+            } else {
+                const gradientStops = selectedEmotions.map((emotion, index) => {
+                    const percentage = (index / (selectedEmotions.length - 1)) * 100;
+                    return `${emotionColors[emotion]} ${percentage}%`;
+                });
+                
+                const gradientCSS = `linear-gradient(90deg, ${gradientStops.join(', ')})`;
+                cloud.style.background = gradientCSS;
+                
+                const gradientData = {
+                    type: 'gradient',
+                    emotions: selectedEmotions,
+                    gradient: gradientCSS
+                };
+                localStorage.setItem(`emotion-${currentCloudDay}`, JSON.stringify(gradientData));
+            }
+            
+            closeGradientModal();
+        }
+
+        // TOGGLE GRUPOS
+        function toggleGroup(groupName) {
+            const content = document.getElementById(`${groupName}-content`);
+            const arrow = content.previousElementSibling.querySelector('.group-arrow');
+            
+            content.classList.toggle('open');
+            arrow.textContent = content.classList.contains('open') ? '▲' : '▼';
+        }
+
+        function resetClouds() {
+            if (confirm('¿Estás segura de que quieres reiniciar TODAS las nubes emocionales? Se perderán todos tus registros.')) {
+                localStorage.clear();
+                createMonths();
+                alert('✨ ¡Todas las nubes han sido reiniciadas!');
+            }
+        }
+
+        function saveClouds() {
+            alert('💾 Nubes emocionales guardadas automáticamente');
+        }
+
+        function exportData() {
+            let emotionData = {};
+            const monthConfig = getMonthConfig();
+            const totalDays = monthConfig[monthConfig.length - 1].startDay + monthConfig[monthConfig.length - 1].days - 1;
+            
+            for (let i = 1; i <= totalDays; i++) {
+                const saved = localStorage.getItem(`emotion-${i}`);
+                if (saved) {
+                    emotionData[i] = saved;
+                }
+            }
+            
+            const dataStr = JSON.stringify(emotionData, null, 2);
+            const dataBlob = new Blob([dataStr], {type: 'application/json'});
+            
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(dataBlob);
+            link.download = 'mis_emociones.json';
+            link.click();
+            
+            alert('📤 Datos exportados correctamente');
+        }
+
+        // Cerrar modal al hacer clic fuera
+        document.getElementById('gradientModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeGradientModal();
+            }
+        });
+
+        // INICIALIZAR
+        document.addEventListener('DOMContentLoaded', () => {
+            createFeathers();
+            createStars();
+            createMonths();
+        });
+    </script>
+</body>
+</html>
