@@ -3,9 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-    <meta http-equiv="Pragma" content="no-cache">
-    <meta http-equiv="Expires" content="0">
     <title>Nubes Emocionales</title>
     <style>
         * {
@@ -24,83 +21,50 @@
             padding-bottom: 100px;
         }
 
-        /* PLUMAS CAYENDO - SIMPLIFICADO PARA MÓVIL */
-        .feathers-container {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 1;
-        }
-
-        .feather {
-            position: absolute;
-            top: -50px;
-            font-size: 20px;
-            color: rgba(255, 255, 255, 0.5);
-            animation: fall linear infinite;
-            text-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
-        }
-
-        @keyframes fall {
-            to {
-                transform: translateY(100vh) rotate(360deg);
-            }
-        }
-
-        /* CONTENEDOR PRINCIPAL */
+        /* CONTENEDOR PRINCIPAL - SIN ANIMACIONES */
         .main-container {
             position: relative;
             z-index: 10;
             display: flex;
-            min-height: calc(100vh - 180px);
-            padding: 15px;
-            gap: 20px;
-            min-width: 1400px;
+            min-height: calc(100vh - 100px);
+            padding: 20px;
+            gap: 30px;
+            min-width: 1600px;
         }
 
-        /* PANEL DE EMOCIONES */
+        /* PANEL DE EMOCIONES - SIN TRANSICIONES */
         .emotions-panel {
-            width: 320px;
-            background: rgba(0, 0, 0, 0.9);
+            width: 350px;
+            background: rgba(0, 0, 0, 0.85);
             border-radius: 15px;
-            padding: 15px;
+            padding: 20px;
             border: 1px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 0 0 30px rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            max-height: calc(100vh - 200px);
+            max-height: calc(100vh - 150px);
             overflow-y: auto;
             flex-shrink: 0;
-            margin-top: 10px;
+            margin-top: 20px;
         }
 
         .emotion-group {
-            margin-bottom: 12px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            margin-bottom: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
             border-radius: 10px;
             overflow: hidden;
         }
 
         .group-header {
-            padding: 12px;
+            padding: 15px;
             cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 10px;
-            transition: all 0.3s ease;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            gap: 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
             background: rgba(255, 255, 255, 0.05);
         }
 
-        .group-header:hover {
-            background: rgba(255, 255, 255, 0.1);
-        }
-
         .group-color {
-            width: 20px;
-            height: 20px;
+            width: 25px;
+            height: 25px;
             border-radius: 50%;
             border: 2px solid rgba(255, 255, 255, 0.5);
             flex-shrink: 0;
@@ -108,43 +72,34 @@
 
         .group-name {
             font-weight: bold;
-            font-size: 14px;
+            font-size: 16px;
             color: #ffffff;
         }
 
         .group-arrow {
             margin-left: auto;
-            transition: transform 0.3s ease;
             color: rgba(255, 255, 255, 0.7);
-            font-size: 12px;
         }
 
         .group-content {
             padding: 0;
             max-height: 0;
             overflow: hidden;
-            transition: all 0.3s ease;
-            background: rgba(255, 255, 255, 0.03);
+            background: rgba(255, 255, 255, 0.05);
         }
 
         .group-content.open {
-            padding: 12px;
-            max-height: 400px;
+            padding: 15px;
+            max-height: 500px;
         }
 
         .emotion-item {
-            padding: 6px 10px;
-            margin: 4px 0;
-            background: rgba(255, 255, 255, 0.06);
-            border-radius: 6px;
-            font-size: 12px;
-            border-left: 3px solid transparent;
-            transition: all 0.2s ease;
-        }
-
-        .emotion-item:hover {
-            background: rgba(255, 255, 255, 0.1);
-            transform: translateX(3px);
+            padding: 8px 12px;
+            margin: 5px 0;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 8px;
+            font-size: 14px;
+            border-left: 4px solid transparent;
         }
 
         /* CONTENEDOR DE MESES */
@@ -152,11 +107,10 @@
             flex: 1;
             display: flex;
             flex-direction: column;
-            gap: 3px;
-            padding: 15px;
+            gap: 0px;
+            padding: 10px;
             overflow-x: auto;
-            overflow-y: visible;
-            margin-top: 10px;
+            margin-top: 20px;
         }
 
         /* GRUPO DE MES */
@@ -164,8 +118,8 @@
             display: flex;
             flex-direction: column;
             gap: 0px;
-            min-width: 1300px;
-            margin-top: -10px;
+            min-width: 1200px;
+            margin-top: -18px;
             position: relative;
             z-index: 1;
         }
@@ -175,7 +129,6 @@
             z-index: 28;
         }
 
-        /* Z-INDEX PROGRESIVO */
         .month-group:nth-child(1) { z-index: 28; }
         .month-group:nth-child(2) { z-index: 26; }
         .month-group:nth-child(3) { z-index: 24; }
@@ -193,40 +146,31 @@
         /* FILAS DE DÍAS DEL MES */
         .month-row {
             display: flex;
-            gap: 2px;
+            gap: 1px;
             flex-wrap: nowrap;
-            justify-content: center;
-            min-height: 38px;
-            padding: 0 15px;
+            justify-content: flex-start;
         }
 
         .month-row:nth-child(2) {
-            margin-top: -10px;
+            margin-top: -18px;
         }
 
-        /* NUBES OPTIMIZADAS */
+        /* NUBES - SIN EFECTOS, SIN ANIMACIONES */
         .cloud {
-            width: 44px;
-            height: 32px;
-            border-radius: 16px;
+            width: 53px;
+            height: 38px;
+            border-radius: 20px;
             cursor: pointer;
-            transition: all 0.2s ease;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            backdrop-filter: blur(3px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 10px;
+            font-size: 12px;
             font-weight: bold;
             color: rgba(0, 0, 0, 0.8);
             text-shadow: 0.5px 0.5px 1px rgba(255, 255, 255, 0.5);
-            box-shadow: 
-                0 0 10px rgba(255, 255, 255, 0.05),
-                inset 0 0 10px rgba(255, 255, 255, 0.03);
             position: relative;
-            margin-left: -6px;
-            flex-shrink: 0;
-            -webkit-tap-highlight-color: transparent;
+            margin-left: -12px;
         }
 
         .cloud:first-child {
@@ -236,10 +180,10 @@
         .cloud::before {
             content: '';
             position: absolute;
-            top: -2px;
-            left: 6px;
-            width: 12px;
-            height: 12px;
+            top: -4px;
+            left: 8px;
+            width: 15px;
+            height: 15px;
             background: inherit;
             border-radius: 50%;
             border: inherit;
@@ -248,27 +192,25 @@
         .cloud::after {
             content: '';
             position: absolute;
-            top: -4px;
-            right: 8px;
-            width: 10px;
-            height: 10px;
+            top: -6px;
+            right: 12px;
+            width: 12px;
+            height: 12px;
             background: inherit;
             border-radius: 50%;
             border: inherit;
         }
 
         .cloud.sin-emocion { 
-            background: rgba(255, 255, 255, 0.1);
-            border-color: rgba(255, 255, 255, 0.2);
-            color: rgba(255, 255, 255, 0.6);
+            background: rgba(255, 255, 255, 0.15);
+            border-color: rgba(255, 255, 255, 0.3);
+            color: rgba(255, 255, 255, 0.7);
         }
 
+        /* HOVER MUY SIMPLE - SOLO CAMBIO DE OPACIDAD */
         .cloud:hover {
-            transform: scale(1.15);
+            opacity: 0.8;
             z-index: 100;
-            box-shadow: 
-                0 0 15px currentColor,
-                0 6px 15px rgba(0, 0, 0, 0.2);
         }
 
         /* COLORES BASE DE EMOCIONES */
@@ -286,34 +228,21 @@
             left: 50%;
             transform: translateX(-50%);
             display: flex;
-            gap: 12px;
+            gap: 15px;
             z-index: 100;
-            background: rgba(0, 0, 0, 0.8);
-            padding: 12px 20px;
-            border-radius: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(10px);
         }
 
         button {
             background: rgba(255, 255, 255, 0.1);
             color: white;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            padding: 10px 18px;
-            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 12px 25px;
+            border-radius: 25px;
             cursor: pointer;
-            transition: all 0.2s ease;
-            backdrop-filter: blur(5px);
-            font-size: 12px;
-            white-space: nowrap;
+            font-size: 14px;
         }
 
-        button:hover {
-            background: rgba(255, 255, 255, 0.15);
-            transform: scale(1.03);
-        }
-
-        /* MODAL MEJORADO PARA MÓVIL */
+        /* MODAL - SIN TRANSICIONES */
         .modal {
             display: none;
             position: fixed;
@@ -321,198 +250,93 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.95);
+            background: rgba(0, 0, 0, 0.9);
             z-index: 1000;
             justify-content: center;
             align-items: center;
-            padding: 20px;
         }
 
         .modal-content {
             background: rgba(0, 0, 0, 0.95);
-            padding: 20px;
-            border-radius: 12px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 30px;
+            border-radius: 15px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
             text-align: center;
-            max-width: 500px;
-            width: 90%;
-            max-height: 85vh;
+            max-width: 600px;
+            max-height: 80vh;
             overflow-y: auto;
         }
 
         .emotion-selector {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 8px;
-            margin: 15px 0;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin: 20px 0;
         }
 
         .emotion-option {
-            padding: 12px 8px;
-            border-radius: 8px;
+            padding: 15px;
+            border-radius: 10px;
             cursor: pointer;
-            border: 1px solid transparent;
-            transition: all 0.2s ease;
+            border: 2px solid transparent;
             text-align: center;
             font-weight: bold;
-            font-size: 12px;
         }
 
         .emotion-option.selected {
             border-color: white;
-            transform: scale(1.02);
-            box-shadow: 0 0 10px currentColor;
         }
 
         .gradient-preview {
             width: 100%;
-            height: 50px;
-            border-radius: 8px;
-            margin: 15px 0;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            transition: all 0.3s ease;
+            height: 60px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border: 2px solid rgba(255, 255, 255, 0.3);
         }
 
         .selected-emotions {
             display: flex;
             flex-wrap: wrap;
-            gap: 6px;
-            margin: 12px 0;
+            gap: 10px;
+            margin: 15px 0;
             justify-content: center;
         }
 
         .selected-emotion-tag {
-            padding: 4px 8px;
-            border-radius: 12px;
-            font-size: 10px;
+            padding: 6px 12px;
+            border-radius: 15px;
+            font-size: 11px;
             font-weight: bold;
             display: flex;
             align-items: center;
-            gap: 4px;
+            gap: 5px;
         }
 
         .remove-emotion {
             cursor: pointer;
             font-weight: bold;
-            margin-left: 3px;
-            font-size: 14px;
+            margin-left: 5px;
         }
 
         /* TÍTULO */
         .title {
             position: fixed;
-            top: 15px;
+            top: 20px;
             left: 50%;
             transform: translateX(-50%);
-            font-size: 1.5em;
+            font-size: 2em;
             color: #ffffff;
-            text-shadow: 0 0 15px rgba(255, 255, 255, 0.4);
             z-index: 100;
-            background: rgba(0, 0, 0, 0.7);
-            padding: 8px 25px;
-            border-radius: 40px;
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(10px);
-            white-space: nowrap;
-        }
-
-        /* ESTRELLAS SIMPLIFICADAS */
-        .stars-container {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 0;
-        }
-
-        .star {
-            position: absolute;
-            background: white;
-            border-radius: 50%;
-            animation: twinkle 4s infinite;
-        }
-
-        @keyframes twinkle {
-            0%, 100% { opacity: 0.1; }
-            50% { opacity: 0.6; }
-        }
-
-        /* SCROLLBAR */
-        .months-container::-webkit-scrollbar {
-            height: 6px;
-        }
-
-        .months-container::-webkit-scrollbar-track {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 8px;
-        }
-
-        .months-container::-webkit-scrollbar-thumb {
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 8px;
-        }
-
-        /* MEJORAS PARA TÁCTIL */
-        @media (max-width: 768px) {
-            body {
-                padding-top: 70px;
-                padding-bottom: 90px;
-            }
-            
-            .main-container {
-                flex-direction: column;
-                min-width: 100%;
-                padding: 10px;
-                gap: 15px;
-            }
-            
-            .emotions-panel {
-                width: 100%;
-                max-height: 300px;
-                order: 2;
-            }
-            
-            .months-container {
-                order: 1;
-                padding: 10px;
-            }
-            
-            .month-group {
-                min-width: 1200px;
-            }
-            
-            .controls {
-                bottom: 15px;
-                padding: 10px 15px;
-                gap: 8px;
-            }
-            
-            button {
-                padding: 8px 12px;
-                font-size: 11px;
-            }
-            
-            .title {
-                font-size: 1.3em;
-                padding: 6px 20px;
-            }
         }
     </style>
 </head>
 <body>
-    <!-- PLUMAS CAYENDO -->
-    <div class="feathers-container" id="feathers-container"></div>
-    
-    <!-- ESTRELLAS TITILANTES -->
-    <div class="stars-container" id="stars-container"></div>
-
     <!-- MODAL PARA GRADIENTES PERSONALIZADOS -->
     <div class="modal" id="gradientModal">
         <div class="modal-content">
-            <h3 style="margin-bottom: 10px;">🎨 Crear Gradiente Emocional</h3>
-            <p style="font-size: 14px; margin-bottom: 15px; opacity: 0.8;">Selecciona las emociones que sentiste hoy:</p>
+            <h3>🎨 Crea tu Gradiente Emocional</h3>
+            <p>Selecciona las emociones que sentiste hoy (puedes elegir varias):</p>
             
             <div class="emotion-selector">
                 <div class="emotion-option alegria" onclick="toggleEmotion('alegria')">
@@ -543,8 +367,8 @@
                 <!-- Vista previa del gradiente -->
             </div>
 
-            <div style="display: flex; gap: 8px; justify-content: center; flex-wrap: wrap;">
-                <button onclick="applyGradient()">✅ Aplicar</button>
+            <div style="display: flex; gap: 10px; justify-content: center;">
+                <button onclick="applyGradient()">✅ Aplicar a Nube</button>
                 <button onclick="closeGradientModal()">❌ Cancelar</button>
                 <button onclick="clearSelection()">🗑️ Limpiar</button>
             </div>
@@ -552,12 +376,12 @@
     </div>
 
     <!-- TÍTULO -->
-    <h1 class="title">🌈 Mis Nubes Emocionales</h1>
+    <h1 class="title">🌈 Nubes Emocionales</h1>
 
     <div class="main-container">
         <!-- PANEL DE EMOCIONES -->
         <div class="emotions-panel">
-            <h3 style="text-align: center; margin-bottom: 15px; color: #ffffff; font-size: 16px;">🎭 Mis Emociones</h3>
+            <h3 style="text-align: center; margin-bottom: 20px; color: #ffffff;">🎭 Mis Emociones</h3>
             
             <!-- ALEGRÍA -->
             <div class="emotion-group">
@@ -662,7 +486,7 @@
             </div>
         </div>
 
-        <!-- MESES -->
+        <!-- MESES SUPERPUESTOS 50% -->
         <div class="months-container" id="months-container">
             <!-- Los meses se generan automáticamente -->
         </div>
@@ -671,48 +495,28 @@
     <!-- CONTROLES -->
     <div class="controls">
         <button onclick="openGradientModal()">🎨 Crear Gradiente</button>
-        <button onclick="resetClouds()">🔄 Reiniciar</button>
+        <button onclick="resetClouds()">🔄 Reiniciar Todo</button>
         <button onclick="saveClouds()">💾 Guardar</button>
-        <button onclick="exportData()">📤 Exportar</button>
     </div>
 
     <script>
-        // CONFIGURACIÓN DESDE HOY HASTA DICIEMBRE 2026
-        function getMonthConfig() {
-            const today = new Date();
-            const currentYear = today.getFullYear();
-            const currentMonth = today.getMonth();
-            const currentDate = today.getDate();
-            
-            const monthConfig = [];
-            let startDay = 1;
-            
-            for (let year = currentYear; year <= 2026; year++) {
-                const startMonth = (year === currentYear) ? currentMonth : 0;
-                const endMonth = (year === 2026) ? 11 : 11;
-                
-                for (let month = startMonth; month <= endMonth; month++) {
-                    const daysInMonth = new Date(year, month + 1, 0).getDate();
-                    let startDate = 1;
-                    
-                    if (year === currentYear && month === currentMonth) {
-                        startDate = currentDate;
-                    }
-                    
-                    monthConfig.push({
-                        year: year,
-                        month: month,
-                        days: daysInMonth,
-                        startDate: startDate,
-                        startDay: startDay
-                    });
-                    
-                    startDay += (daysInMonth - startDate + 1);
-                }
-            }
-            
-            return monthConfig;
-        }
+        // CONFIGURACIÓN DE MESES (Nov 2025 - Dic 2026)
+        const monthConfig = [
+            { name: "NOVIEMBRE 2025", days: 30, startDay: 1 },
+            { name: "DICIEMBRE 2025", days: 31, startDay: 31 },
+            { name: "ENERO 2026", days: 31, startDay: 62 },
+            { name: "FEBRERO 2026", days: 28, startDay: 93 },
+            { name: "MARZO 2026", days: 31, startDay: 121 },
+            { name: "ABRIL 2026", days: 30, startDay: 152 },
+            { name: "MAYO 2026", days: 31, startDay: 182 },
+            { name: "JUNIO 2026", days: 30, startDay: 213 },
+            { name: "JULIO 2026", days: 31, startDay: 243 },
+            { name: "AGOSTO 2026", days: 31, startDay: 274 },
+            { name: "SEPTIEMBRE 2026", days: 30, startDay: 305 },
+            { name: "OCTUBRE 2026", days: 31, startDay: 335 },
+            { name: "NOVIEMBRE 2026", days: 30, startDay: 366 },
+            { name: "DICIEMBRE 2026", days: 31, startDay: 396 }
+        ];
 
         let currentCloudDay = null;
         let selectedEmotions = [];
@@ -736,70 +540,35 @@
             creatividad: 'CREATIVIDAD'
         };
 
-        // CREAR PLUMAS CAYENDO - OPTIMIZADO
-        function createFeathers() {
-            const container = document.getElementById('feathers-container');
-            const featherCount = 8; // Menos plumas para mejor rendimiento
-            
-            for (let i = 0; i < featherCount; i++) {
-                const feather = document.createElement('div');
-                feather.className = 'feather';
-                feather.innerHTML = '𓆰';
-                feather.style.left = Math.random() * 100 + 'vw';
-                feather.style.animationDuration = (Math.random() * 8 + 8) + 's';
-                feather.style.animationDelay = Math.random() * 3 + 's';
-                feather.style.opacity = Math.random() * 0.3 + 0.2;
-                container.appendChild(feather);
-            }
-        }
-
-        // CREAR ESTRELLAS TITILANTES - OPTIMIZADO
-        function createStars() {
-            const container = document.getElementById('stars-container');
-            const starCount = 30; // Menos estrellas
-            
-            for (let i = 0; i < starCount; i++) {
-                const star = document.createElement('div');
-                star.className = 'star';
-                star.style.width = Math.random() * 2 + 1 + 'px';
-                star.style.height = star.style.width;
-                star.style.left = Math.random() * 100 + 'vw';
-                star.style.top = Math.random() * 100 + 'vh';
-                star.style.animationDelay = Math.random() * 2 + 's';
-                star.style.animationDuration = (Math.random() * 3 + 2) + 's';
-                container.appendChild(star);
-            }
-        }
-
-        // CREAR MESES SUPERPUESTOS
+        // CREAR MESES SUPERPUESTOS 50%
         function createMonths() {
             const container = document.getElementById('months-container');
             container.innerHTML = '';
             
-            const monthConfig = getMonthConfig();
-            
-            monthConfig.forEach((monthData, index) => {
+            monthConfig.forEach((month, index) => {
                 const monthGroup = document.createElement('div');
                 monthGroup.className = 'month-group';
                 monthGroup.style.zIndex = (28 - (index * 2));
                 
-                const totalDays = monthData.days - monthData.startDate + 1;
-                const daysPerRow = Math.ceil(totalDays / 2);
+                // Dividir los días en 2 filas
+                const daysPerRow = Math.ceil(month.days / 2);
                 
+                // Primera fila del mes
                 const row1 = document.createElement('div');
                 row1.className = 'month-row';
                 
+                // Segunda fila del mes
                 const row2 = document.createElement('div');
                 row2.className = 'month-row';
                 
-                let dayCounter = 0;
-                for (let day = monthData.startDate; day <= monthData.days; day++) {
-                    const globalDay = monthData.startDay + dayCounter;
+                for (let day = 1; day <= month.days; day++) {
+                    const globalDay = month.startDay + day - 1;
                     const cloud = document.createElement('div');
                     cloud.className = 'cloud sin-emocion';
                     cloud.dataset.day = globalDay;
                     cloud.textContent = day;
                     
+                    // Recuperar estado guardado
                     const savedState = localStorage.getItem(`emotion-${globalDay}`);
                     if (savedState) {
                         if (savedState.includes('gradient')) {
@@ -810,33 +579,29 @@
                         }
                     }
                     
+                    // Evento click
                     cloud.addEventListener('click', (e) => {
                         e.stopPropagation();
                         currentCloudDay = globalDay;
                         openGradientModal();
                     });
                     
-                    if (dayCounter < daysPerRow) {
+                    // Asignar a la fila correspondiente
+                    if (day <= daysPerRow) {
                         row1.appendChild(cloud);
                     } else {
                         row2.appendChild(cloud);
                     }
-                    
-                    dayCounter++;
                 }
                 
                 monthGroup.appendChild(row1);
-                if (totalDays > daysPerRow) {
-                    monthGroup.appendChild(row2);
-                }
+                monthGroup.appendChild(row2);
                 container.appendChild(monthGroup);
             });
         }
 
         // MODAL PARA GRADIENTES PERSONALIZADOS
         function openGradientModal() {
-            if (!currentCloudDay) return;
-            
             selectedEmotions = [];
             updateGradientPreview();
             document.getElementById('gradientModal').style.display = 'flex';
@@ -845,7 +610,6 @@
         function closeGradientModal() {
             document.getElementById('gradientModal').style.display = 'none';
             selectedEmotions = [];
-            currentCloudDay = null;
         }
 
         function toggleEmotion(emotion) {
@@ -948,35 +712,11 @@
             if (confirm('¿Reiniciar todas las nubes emocionales?')) {
                 localStorage.clear();
                 createMonths();
-                alert('✨ ¡Nubes reiniciadas!');
             }
         }
 
         function saveClouds() {
-            alert('💾 Nubes guardadas automáticamente');
-        }
-
-        function exportData() {
-            let emotionData = {};
-            const monthConfig = getMonthConfig();
-            const totalDays = monthConfig[monthConfig.length - 1].startDay + monthConfig[monthConfig.length - 1].days - 1;
-            
-            for (let i = 1; i <= totalDays; i++) {
-                const saved = localStorage.getItem(`emotion-${i}`);
-                if (saved) {
-                    emotionData[i] = saved;
-                }
-            }
-            
-            const dataStr = JSON.stringify(emotionData, null, 2);
-            const dataBlob = new Blob([dataStr], {type: 'application/json'});
-            
-            const link = document.createElement('a');
-            link.href = URL.createObjectURL(dataBlob);
-            link.download = 'mis_emociones.json';
-            link.click();
-            
-            alert('📤 Datos exportados');
+            alert('🌈 Nubes emocionales guardadas');
         }
 
         // Cerrar modal al hacer clic fuera
@@ -988,8 +728,6 @@
 
         // INICIALIZAR
         document.addEventListener('DOMContentLoaded', () => {
-            createFeathers();
-            createStars();
             createMonths();
         });
     </script>
